@@ -1,4 +1,3 @@
-// const axios = require('axios');
 const getAllButton = document.getElementById('get-all'),
 	  getByIdButton = document.getElementById('get-by-id'),
 	  postAllButton = document.getElementById('post-all'),
