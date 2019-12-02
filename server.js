@@ -52,7 +52,7 @@ router.put('/mongo/news/add', (req, res) => {
     News.find({}, (error, news) => {
         if (error) throw new Error(error);
         const ids = news.map(item => item.id);
-        const itemId = Math.max(...ids) + 1;
+        const itemId = Math.max(...ids) + 1 || 0;
         const item = req.body;
         item.id = itemId;
         News.create(item, (error, result) => {
@@ -70,6 +70,12 @@ router.post('/mongo/news/edit/:id', (req, res) => {
         .catch(error => {
             throw new Error(error);
         });
+});
+
+router.delete('/mongo/news/delete/:id', (req, res) => {
+    News.findOneAndRemove({ id: req.params.id })
+        .then(result => res.send('News item deleted'))
+        .catch(error => { throw new Error(error); });
 });
 
 router.get('/news', (req, res) => {
@@ -102,7 +108,7 @@ router.post('/news/edit/:id', (req, res) => {
 
 router.put('/news/add', (req, res) => {
     const ids = news.map(item => item.id);
-    const itemId = Math.max(...ids) + 1;
+    const itemId = Math.max(...ids) + 1 || 0;
     const item = req.body;
     item.id = itemId;
     news.push(item);

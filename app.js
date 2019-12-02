@@ -8,7 +8,8 @@ const getAllButton = document.getElementById('get-all'),
       getAllMongoButton = document.getElementById('get-all-mongo'),
       getByIdMongoButton = document.getElementById('get-by-id-mongo')
       addNewsItemMongoButton = document.getElementById('add-item-mongo'),
-      editNewsItemMongoButton = document.getElementById('edit-item-mongo');
+      editNewsItemMongoButton = document.getElementById('edit-item-mongo'),
+      deleteNewsItemMongoButton = document.getElementById('delete-item-mongo');
 
 const baseUrl = 'http://localhost:3001';
 
@@ -106,3 +107,4 @@ addNewsItemMongoButton.addEventListener('click', () => addNewsItem({
 editNewsItemMongoButton.addEventListener('click', () => editNewsItem(2, {
     author: "John Doe"
 }, true));
+deleteNewsItemMongoButton.addEventListener('click', () => deleteNewsItem(3, true));
