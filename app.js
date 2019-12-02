@@ -1,15 +1,19 @@
 const getAllButton = document.getElementById('get-all'),
-	  getByIdButton = document.getElementById('get-by-id'),
-	  postAllButton = document.getElementById('post-all'),
-	  editNewsItemButton = document.getElementById('edit-item'),
-	  addNewsItemButton = document.getElementById('add-item'),
-	  deleteNewsItemButton = document.getElementById('delete-item'),
-	  checkErrorHandlerButton = document.getElementById('check-error-handler');
+      getByIdButton = document.getElementById('get-by-id'),
+      postAllButton = document.getElementById('post-all'),
+      editNewsItemButton = document.getElementById('edit-item'),
+      addNewsItemButton = document.getElementById('add-item'),
+      deleteNewsItemButton = document.getElementById('delete-item'),
+      checkErrorHandlerButton = document.getElementById('check-error-handler')
+      getAllMongoButton = document.getElementById('get-all-mongo'),
+      getByIdMongoButton = document.getElementById('get-by-id-mongo')
+      addNewsItemMongoButton = document.getElementById('add-item-mongo'),
+      editNewsItemMongoButton = document.getElementById('edit-item-mongo');
 
 const baseUrl = 'http://localhost:3001';
 
-const getAllNews = () => {
-    axios.get(baseUrl + '/news')
+const getAllNews = (isMongo = false) => {
+    axios.get(baseUrl + (isMongo ? '/mongo' : '') + '/news')
         .then((response) => {
             console.log('response:', response);
         })
@@ -18,8 +22,8 @@ const getAllNews = () => {
         });
 };
 
-const postAllNews = () => {
-    axios.post(baseUrl + '/news')
+const postAllNews = (isMongo = false) => {
+    axios.post(baseUrl + (isMongo ? '/mongo' : '') + '/news')
         .then((response) => {
             console.log('response:', response);
         })
@@ -28,8 +32,8 @@ const postAllNews = () => {
         });
 };
 
-const getNewsItemById = (id) => {
-    axios.get(baseUrl + '/news/' + id)
+const getNewsItemById = (id, isMongo = false) => {
+    axios.get(baseUrl + (isMongo ? '/mongo' : '') + '/news/' + id)
         .then((response) => {
             console.log('response:', response);
         })
@@ -38,8 +42,8 @@ const getNewsItemById = (id) => {
         });
 };
 
-const editNewsItem = (id, editData) => {
-    axios.post(baseUrl + '/news/edit/' + id, editData)
+const editNewsItem = (id, editData, isMongo = false) => {
+    axios.post(baseUrl + (isMongo ? '/mongo' : '') + '/news/edit/' + id, editData)
         .then((response) => {
             console.log('response:', response);
         })
@@ -48,8 +52,8 @@ const editNewsItem = (id, editData) => {
         });
 };
 
-const addNewsItem = (data) => {
-    axios.put(baseUrl + '/news/add/', data)
+const addNewsItem = (data, isMongo = false) => {
+    axios.put(baseUrl + (isMongo ? '/mongo' : '') + '/news/add/', data)
         .then((response) => {
             console.log('response:', response);
         })
@@ -58,8 +62,8 @@ const addNewsItem = (data) => {
         });
 };
 
-const deleteNewsItem = (id) => {
-    axios.delete(baseUrl + '/news/delete/' + id)
+const deleteNewsItem = (id, isMongo = false) => {
+    axios.delete(baseUrl + (isMongo ? '/mongo' : '') + '/news/delete/' + id)
         .then((response) => {
             console.log('response:', response);
         })
@@ -68,20 +72,37 @@ const deleteNewsItem = (id) => {
         });
 };
 
-getAllButton.addEventListener('click', getAllNews);
-getByIdButton.addEventListener('click', () => getNewsItemById(2));
-deleteNewsItemButton.addEventListener('click', () => deleteNewsItem(3));
-postAllButton.addEventListener('click', postAllNews);
+getAllButton.addEventListener('click', () => getAllNews(false));
+getByIdButton.addEventListener('click', () => getNewsItemById(2, false));
+deleteNewsItemButton.addEventListener('click', () => deleteNewsItem(3, false));
+postAllButton.addEventListener('click', () => postAllNews(false));
 editNewsItemButton.addEventListener('click', () => editNewsItem(2, {
     author: "Alexei Azarenko"
-}));
+}, false));
 addNewsItemButton.addEventListener('click', () => addNewsItem({
     author: "Alexei Azarenko",
     content: "New item content",
-    desciption: "New iten desciption",
+    description: "New iten description",
     sourse: {
         id: "my-mind",
         name: "My Mind"
     }
-}));
-checkErrorHandlerButton.addEventListener('click', () => getNewsItemById(98));
+}, false));
+checkErrorHandlerButton.addEventListener('click', () => getNewsItemById(98 ,false));
+
+// For mongo
+
+getAllMongoButton.addEventListener('click', () => getAllNews(true));
+getByIdMongoButton.addEventListener('click', () => getNewsItemById(3, true));
+addNewsItemMongoButton.addEventListener('click', () => addNewsItem({
+    author: "Alexei Azarenko",
+    content: "New item content",
+    description: "New iten description",
+    sourse: {
+        id: "my-mind",
+        name: "My Mind"
+    }
+}, true));
+editNewsItemMongoButton.addEventListener('click', () => editNewsItem(2, {
+    author: "John Doe"
+}, true));

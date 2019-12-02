@@ -2,7 +2,22 @@ const express = require('express'),
       app = express(),
       router = express.Router(),
       fs = require('fs'),
-      bodyParser = require('body-parser');
+      bodyParser = require('body-parser')
+      mongoose = require('mongoose')
+      url = 'mongodb://localhost:27017',
+      dbName = 'news';
+
+mongoose.connect(`${url}/${dbName}`, { useNewUrlParser: true });
+
+const newsSchema = new mongoose.Schema({
+    id: Number,
+    author: String,
+    title: String,
+    description: String,
+    content: String
+});
+
+const News = mongoose.model('News', newsSchema);
 
 let news;
 
@@ -16,6 +31,45 @@ router.use((req, res, next) => {
     res.setHeader('Access-Control-Allow-Headers', 'X-Requested-With,content-type');
     res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS, PUT, PATCH, DELETE');
     next();
+});
+
+router.get('/mongo/news', (req, res) => {
+    News.find({}, (error, news) => {
+        if (error) throw new Error(error);
+        res.json(news);
+    });
+});
+
+router.get('/mongo/news/:id', (req, res) => {
+    News.findOne({ id: req.params.id }).then(result => {
+        res.json(result);
+    }).catch(error => {
+        throw new Error(error);
+    })
+});
+
+router.put('/mongo/news/add', (req, res) => {
+    News.find({}, (error, news) => {
+        if (error) throw new Error(error);
+        const ids = news.map(item => item.id);
+        const itemId = Math.max(...ids) + 1;
+        const item = req.body;
+        item.id = itemId;
+        News.create(item, (error, result) => {
+            if (error) throw new Error(error);
+            res.send('News item added');
+        });
+    });
+});
+
+router.post('/mongo/news/edit/:id', (req, res) => {
+    News.findOneAndUpdate({ id: req.params.id }, req.body)
+        .then(result => {
+            res.json('News item edited');
+        })
+        .catch(error => {
+            throw new Error(error);
+        });
 });
 
 router.get('/news', (req, res) => {
